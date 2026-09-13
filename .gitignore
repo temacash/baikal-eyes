@@ -1,0 +1,17 @@
+# зависимости и сборка
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# окружение
+.env
+.env*.local
+
+# системное
+.DS_Store
+Thumbs.db
+
+# служебное
+_archive/
