@@ -3,57 +3,84 @@ import { useEffect, useRef } from 'react';
 import { DPR, rng } from '@/lib/scenes';
 import { LogoMark, LogoWord } from './Logo';
 
-/** Заставка при первом открытии: морозное стекло протаивает и открывает сайт. */
+/** Заставка при первом открытии: байкальский лёд протаивает и открывает сайт. */
 function drawFrostPattern(cv: HTMLCanvasElement) {
   const w = (cv.width = Math.round(window.innerWidth * DPR));
   const h = (cv.height = Math.round(window.innerHeight * DPR));
-  const ctx = cv.getContext('2d');
+  const ctx = cv.getContext('2d')!;
   if (!ctx) return;
-  const r = rng(2024);
+  const r = rng(2024), M = Math.min(w, h);
 
-  const g = ctx.createRadialGradient(w / 2, h * 0.46, Math.min(w, h) * 0.12, w / 2, h * 0.5, Math.max(w, h) * 0.72);
-  g.addColorStop(0, 'rgba(200,235,250,.04)');
-  g.addColorStop(0.55, 'rgba(190,228,245,.15)');
-  g.addColorStop(1, 'rgba(214,242,252,.42)');
-  ctx.fillStyle = g;
-  ctx.fillRect(0, 0, w, h);
+  /* толща байкальского льда: к центру светлее, к краям уходит в глубину */
+  const g = ctx.createRadialGradient(w * .5, h * .44, M * .05, w * .5, h * .5, Math.max(w, h) * .8);
+  g.addColorStop(0, 'rgba(138,203,226,.34)');
+  g.addColorStop(.42, 'rgba(82,158,188,.55)');
+  g.addColorStop(1, 'rgba(22,70,96,.82)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
 
-  const branch = (x: number, y: number, ang: number, len: number, depth: number, wid: number) => {
-    if (depth <= 0 || len < 3) return;
-    const x2 = x + Math.cos(ang) * len, y2 = y + Math.sin(ang) * len;
-    ctx.strokeStyle = `rgba(228,247,255,${0.05 + depth * 0.045})`;
-    ctx.lineWidth = wid;
-    ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x2, y2); ctx.stroke();
-    const n = 2 + ((r() * 2) | 0);
-    for (let i = 1; i <= n; i++) {
-      const t = i / (n + 1), bx = x + (x2 - x) * t, by = y + (y2 - y) * t, s = len * (0.26 + r() * 0.3);
-      for (const k of [-1, 1]) {
-        const a = ang + k * (Math.PI / 3) * (0.8 + r() * 0.4);
-        const ex = bx + Math.cos(a) * s, ey = by + Math.sin(a) * s;
-        ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(ex, ey); ctx.stroke();
-        if (depth > 2 && r() > 0.62) branch(ex, ey, a, s * 0.55, depth - 2, Math.max(0.4, wid * 0.7));
-      }
-    }
-    branch(x2, y2, ang + (r() - 0.5) * 0.5, len * 0.72, depth - 1, Math.max(0.4, wid * 0.82));
-  };
-
-  for (let i = 0; i < 30; i++) {
-    const side = i % 4, t = r();
-    let x: number, y: number, a: number;
-    if (side === 0) { x = t * w; y = 0; a = Math.PI / 2 + (r() - 0.5) * 0.9; }
-    else if (side === 1) { x = w; y = t * h; a = Math.PI + (r() - 0.5) * 0.9; }
-    else if (side === 2) { x = t * w; y = h; a = -Math.PI / 2 + (r() - 0.5) * 0.9; }
-    else { x = 0; y = t * h; a = (r() - 0.5) * 0.9; }
-    branch(x, y, a, Math.min(w, h) * (0.08 + r() * 0.13), 4, Math.max(0.8, DPR));
+  for (let i = 0; i < 28; i++) {                       // разводы и наплывы
+    const x = r() * w, y = r() * h, rad = M * (.08 + r() * .24), a = .05 + r() * .13;
+    const gg = ctx.createRadialGradient(x, y, 0, x, y, rad);
+    gg.addColorStop(0, r() > .5 ? 'rgba(169,229,245,' + a + ')' : 'rgba(16,56,78,' + a + ')');
+    gg.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = gg; ctx.fillRect(x - rad, y - rad, rad * 2, rad * 2);
   }
-  for (let i = 0; i < 170; i++) {
-    const x = r() * w, y = r() * h, s = (1 + r() * 2.4) * DPR;
-    ctx.globalAlpha = 0.08 + r() * 0.45;
-    ctx.fillStyle = '#EAF7FD';
-    ctx.beginPath();
-    for (let k = 0; k < 6; k++) { const a = (k * Math.PI) / 3; ctx[k ? 'lineTo' : 'moveTo'](x + Math.cos(a) * s, y + Math.sin(a) * s); }
-    ctx.closePath(); ctx.fill();
+
+  /* белая трещина: ломаная с дрожанием и мягким свечением по кромке */
+  function crack(x1: number, y1: number, x2: number, y2: number, wid: number, alpha: number) {
+    const segs = 6 + ((r() * 5) | 0), dx = (x2 - x1) / segs, dy = (y2 - y1) / segs;
+    let nx = -(y2 - y1), ny = x2 - x1;
+    const len = Math.hypot(nx, ny) || 1; nx /= len; ny /= len;
+    ctx.beginPath(); ctx.moveTo(x1, y1);
+    for (let i = 1; i <= segs; i++) {
+      const off = (r() - .5) * M * .022 * (1 - Math.abs(i / segs - .5) * 1.1);
+      ctx.lineTo(x1 + dx * i + nx * off, y1 + dy * i + ny * off);
+    }
+    ctx.strokeStyle = 'rgba(255,255,255,' + alpha + ')';
+    ctx.lineWidth = wid; ctx.lineCap = 'round';
+    ctx.shadowColor = 'rgba(214,241,252,.85)'; ctx.shadowBlur = wid * 3;
+    ctx.stroke(); ctx.shadowBlur = 0;
+  }
+
+  /* лёд колется на многоугольники: узлы + рёбра к ближайшим соседям */
+  const pts: [number, number][] = [];
+  for (let i = 0; i < 15; i++) pts.push([r() * w, r() * h]);
+  for (let i = 0; i < 10; i++) {                        // узлы за краями — трещины уходят за экран
+    const t = r(), o = M * .06, side = i % 4;
+    pts.push((side === 0 ? [t * w, -o] : side === 1 ? [w + o, t * h] : side === 2 ? [t * w, h + o] : [-o, t * h]) as [number, number]);
+  }
+  pts.forEach((p, i) => {
+    const near = pts
+      .map((q, j): [number, number] => [j, (q[0] - p[0]) * (q[0] - p[0]) + (q[1] - p[1]) * (q[1] - p[1])])
+      .filter(x => x[0] !== i).sort((a, b) => a[1] - b[1]);
+    const k = 2 + ((r() * 2) | 0);
+    for (let n = 0; n < k && n < near.length; n++) {
+      const q = pts[near[n][0]];
+      crack(p[0], p[1], q[0], q[1], Math.max(1, DPR * (.6 + r() * 1.2)), .22 + r() * .38);
+    }
+  });
+
+  for (let i = 0; i < 3; i++) {                         // становые щели во весь экран
+    const y = r() * h;
+    crack(-M * .06, y, w + M * .06, y + (r() - .5) * h * .38, Math.max(1.6, DPR * 2.2), .45 + r() * .3);
+  }
+  for (let i = 0; i < 26; i++) {                        // короткие ответвления
+    const x = r() * w, y = r() * h, a = r() * Math.PI * 2, l = M * (.03 + r() * .09);
+    crack(x, y, x + Math.cos(a) * l, y + Math.sin(a) * l, Math.max(.7, DPR * .7), .14 + r() * .25);
+  }
+
+  for (let i = 0; i < 150; i++) {                       // пузырьки воздуха во льду
+    const x = r() * w, y = r() * h, s = (1 + r() * 3) * DPR;
+    ctx.globalAlpha = .1 + r() * .45; ctx.fillStyle = '#F2FBFF';
+    ctx.beginPath(); ctx.ellipse(x, y, s, s * (.5 + r() * .9), r() * 3, 0, 7); ctx.fill();
+  }
+  for (let i = 0; i < 16; i++) {                        // вертикальные цепочки пузырьков
+    const x = r() * w, y = r() * h, n = 3 + ((r() * 6) | 0);
+    for (let k = 0; k < n; k++) {
+      const s = (1.3 + r() * 2.4) * DPR * (1 - (k / n) * .55);
+      ctx.globalAlpha = .18 + r() * .42; ctx.fillStyle = '#FFFFFF';
+      ctx.beginPath(); ctx.ellipse(x + (r() - .5) * M * .012, y + k * M * .014, s, s * 1.35, 0, 0, 7); ctx.fill();
+    }
   }
   ctx.globalAlpha = 1;
 }

@@ -59,22 +59,22 @@ p{margin:0}
 html.freezing{overflow:hidden}
 html.freezing h1.hero__t .ln>span,html.freezing .fade-up{animation-play-state:paused}
 .frost{position:fixed;inset:0;z-index:80;pointer-events:none;
-  background:rgba(11,17,23,var(--f-bg,.62));
-  -webkit-backdrop-filter:blur(var(--f-blur,26px)) saturate(.72) brightness(.82);
-  backdrop-filter:blur(var(--f-blur,26px)) saturate(.72) brightness(.82);
+  background:rgba(20,62,86,var(--f-bg,.58));
+  -webkit-backdrop-filter:blur(var(--f-blur,26px)) saturate(1.05) brightness(.88);
+  backdrop-filter:blur(var(--f-blur,26px)) saturate(1.05) brightness(.88);
   -webkit-mask-image:radial-gradient(ellipse 120% 100% at 50% 46%,transparent var(--f-r0,0%),#000 var(--f-r1,0%));
   mask-image:radial-gradient(ellipse 120% 100% at 50% 46%,transparent var(--f-r0,0%),#000 var(--f-r1,0%))}
 .frost canvas{position:absolute;inset:0;width:100%;height:100%;opacity:var(--f-ice,1)}
 .frostlogo{position:fixed;inset:0;z-index:81;pointer-events:none;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
   color:var(--paper);opacity:var(--f-lg,1);
-  transform:scale(var(--f-lgs,1));filter:blur(var(--f-lgb,0px))}
+  transform:scale(var(--f-lgs,1));filter:blur(var(--f-lgb,0px)) drop-shadow(0 8px 30px rgba(5,20,30,.65))}
 .frostlogo .lg--mark{height:clamp(54px,9vw,86px);width:auto}
 .frostlogo .lg--word{height:clamp(17px,2.6vw,26px);width:auto;margin-top:4px}
 .frostlogo .bar{width:min(190px,42vw);height:1px;background:rgba(169,229,245,.18);overflow:hidden;margin-top:10px}
 .frostlogo .bar i{display:block;height:100%;width:var(--f-p,0%);background:var(--ice);
   box-shadow:0 0 12px rgba(169,229,245,.8)}
-.frostlogo small{font-size:.6rem;letter-spacing:.32em;text-transform:uppercase;color:var(--muted-2)}
+.frostlogo small{font-size:.6rem;letter-spacing:.32em;text-transform:uppercase;color:rgba(235,247,253,.66)}
 
 /* ============ ATMOSPHERE ============ */
 .grain{position:fixed;inset:-50%;z-index:9;pointer-events:none;opacity:.05;
