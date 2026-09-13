@@ -55,17 +55,30 @@ p{margin:0}
 ::-webkit-scrollbar-track{background:var(--ink)}
 ::-webkit-scrollbar-thumb{background:#1d2c39;border-radius:9px}
 
-/* ============ ЗАСТАВКА: РАЗМОРОЗКА ============ */
+/* ============ ЗАСТАВКА: ЛЁД ЛОМАЕТСЯ И ТАЕТ ============ */
 html.freezing{overflow:hidden}
 html.freezing h1.hero__t .ln>span,html.freezing .fade-up{animation-play-state:paused}
 .frost{position:fixed;inset:0;z-index:80;pointer-events:none;
   background:rgba(20,62,86,var(--f-bg,.58));
   -webkit-backdrop-filter:blur(var(--f-blur,26px)) saturate(1.05) brightness(.88);
   backdrop-filter:blur(var(--f-blur,26px)) saturate(1.05) brightness(.88);
-  -webkit-mask-image:radial-gradient(ellipse 120% 100% at 50% 46%,transparent var(--f-r0,0%),#000 var(--f-r1,0%));
-  mask-image:radial-gradient(ellipse 120% 100% at 50% 46%,transparent var(--f-r0,0%),#000 var(--f-r1,0%))}
-.frost canvas{position:absolute;inset:0;width:100%;height:100%;opacity:var(--f-ice,1)}
-.frostlogo{position:fixed;inset:0;z-index:81;pointer-events:none;
+  transition:opacity .22s linear}
+.frost canvas{position:absolute;inset:0;width:100%;height:100%}
+.frost.hit{animation:iceshake .26s cubic-bezier(.36,.07,.19,.97)}
+.frost.gone{opacity:0}
+@keyframes iceshake{
+  0%{transform:translate3d(0,0,0)}15%{transform:translate3d(-7px,3px,0)}
+  32%{transform:translate3d(6px,-4px,0)}48%{transform:translate3d(-4px,-2px,0)}
+  66%{transform:translate3d(3px,3px,0)}100%{transform:translate3d(0,0,0)}}
+.shards{position:fixed;inset:0;z-index:81;pointer-events:none;
+  perspective:1500px;perspective-origin:50% 46%;transform-style:preserve-3d}
+.shards canvas{position:absolute;will-change:transform,opacity,filter;backface-visibility:hidden}
+.icemelt{position:fixed;inset:0;z-index:79;pointer-events:none;opacity:0;
+  background:radial-gradient(ellipse 90% 70% at 50% 46%,rgba(169,229,245,.22),rgba(18,59,80,.32) 70%,rgba(11,17,23,.4));
+  -webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px)}
+.crackflash{position:fixed;inset:0;z-index:80;pointer-events:none;opacity:0}
+.crackflash canvas{position:absolute;inset:0;width:100%;height:100%}
+.frostlogo{position:fixed;inset:0;z-index:83;pointer-events:none;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
   color:var(--paper);opacity:var(--f-lg,1);
   transform:scale(var(--f-lgs,1));filter:blur(var(--f-lgb,0px)) drop-shadow(0 8px 30px rgba(5,20,30,.65))}

@@ -327,9 +327,95 @@ function drawFrostPattern(cv) {
   ctx.globalAlpha = 1;
 }
 
+/* трещины от удара: лучи и кольцевые сколы */
+function drawImpact(cv, cx, cy, rays) {
+  const w = cv.width = Math.round(innerWidth * DPR), h = cv.height = Math.round(innerHeight * DPR);
+  const ctx = cv.getContext('2d'), r = rng(313), M = Math.hypot(w, h);
+  ctx.clearRect(0, 0, w, h);
+  ctx.lineCap = 'round';
+  ctx.shadowColor = 'rgba(226,247,255,.95)';
+  const X = cx * DPR, Y = cy * DPR;
+  for (let i = 0; i < rays; i++) {
+    const a = (i / rays) * Math.PI * 2 + (r() - .5) * .4, len = M * (.35 + r() * .35);
+    ctx.beginPath(); ctx.moveTo(X, Y);
+    let x = X, y = Y;
+    for (let k = 1; k <= 7; k++) {
+      const t = k / 7;
+      x = X + Math.cos(a) * len * t + (r() - .5) * M * .02;
+      y = Y + Math.sin(a) * len * t + (r() - .5) * M * .02;
+      ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = 'rgba(255,255,255,' + (.55 + r() * .4) + ')';
+    ctx.lineWidth = (1.4 + r() * 2.2) * DPR; ctx.shadowBlur = 14 * DPR;
+    ctx.stroke();
+  }
+  for (let k = 1; k <= 3; k++) {                       // кольцевые сколы
+    const rad = M * (.08 + k * .11);
+    ctx.beginPath();
+    for (let i = 0; i <= 40; i++) {
+      const a = (i / 40) * Math.PI * 2, rr = rad * (.86 + r() * .28);
+      ctx[i ? 'lineTo' : 'moveTo'](X + Math.cos(a) * rr, Y + Math.sin(a) * rr);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = 'rgba(255,255,255,' + (.3 + r() * .3) + ')';
+    ctx.lineWidth = (1 + r() * 1.6) * DPR; ctx.shadowBlur = 10 * DPR; ctx.stroke();
+  }
+  ctx.shadowBlur = 0;
+}
+
+/* разбиение экрана на осколки: узлы на лучах и кольцах — соседние куски делят рёбра */
+function buildShards(src, cx, cy, rays, rings) {
+  const w = innerWidth, h = innerHeight, r = rng(911);
+  const maxR = Math.hypot(w, h) * .62, ang = [], R = [];
+  for (let i = 0; i < rays; i++) ang.push((i / rays) * Math.PI * 2 + (r() - .5) * (Math.PI / rays) * .8);
+  for (let i = 0; i < rays; i++) {
+    R.push([0]);
+    for (let k = 1; k <= rings; k++) {
+      const base = maxR * Math.pow(k / rings, 1.25);
+      R[i].push(k === rings ? maxR : Math.max(R[i][k - 1] + maxR * .12, base * (.8 + r() * .4)));
+    }
+  }
+  const P = (i, k) => [cx + Math.cos(ang[i % rays]) * R[i % rays][k], cy + Math.sin(ang[i % rays]) * R[i % rays][k]];
+  const out = [];
+  for (let i = 0; i < rays; i++) {
+    for (let k = 0; k < rings; k++) {
+      const poly = k === 0
+        ? [[cx, cy], P(i, 1), P(i + 1, 1)]
+        : [P(i, k), P(i + 1, k), P(i + 1, k + 1), P(i, k + 1)];
+      const xs = poly.map(p => p[0]), ys = poly.map(p => p[1]);
+      const bx = Math.max(-200, Math.min.apply(null, xs) - 1), by = Math.max(-200, Math.min.apply(null, ys) - 1);
+      const bw = Math.min(w + 400, Math.max.apply(null, xs) + 1) - bx, bh = Math.min(h + 400, Math.max.apply(null, ys) + 1) - by;
+      if (bw < 2 || bh < 2) continue;
+      const cv = document.createElement('canvas');
+      cv.width = Math.round(bw * DPR); cv.height = Math.round(bh * DPR);
+      cv.style.cssText = 'left:' + bx + 'px;top:' + by + 'px;width:' + bw + 'px;height:' + bh + 'px';
+      const ctx = cv.getContext('2d');
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      const path = () => {
+        ctx.beginPath();
+        poly.forEach((p, n) => ctx[n ? 'lineTo' : 'moveTo'](p[0] - bx, p[1] - by));
+        ctx.closePath();
+      };
+      ctx.save(); path(); ctx.clip();
+      ctx.drawImage(src, 0, 0, src.width, src.height, -bx, -by, w, h);
+      ctx.restore();
+      path();                                            // светящаяся кромка скола
+      ctx.strokeStyle = 'rgba(240,252,255,.5)'; ctx.lineWidth = 1;
+      ctx.shadowColor = 'rgba(200,238,252,.8)'; ctx.shadowBlur = 6; ctx.stroke(); ctx.shadowBlur = 0;
+      const mx = xs.reduce((a, b) => a + b, 0) / xs.length, my = ys.reduce((a, b) => a + b, 0) / ys.length;
+      out.push({ el: cv, mx, my, dist: Math.hypot(mx - cx, my - cy) / maxR, rnd: r() });
+    }
+  }
+  return out;
+}
+
 function frostIntro() {
-  const fr = $('#frost'), lg = $('#frostlogo'), root = document.documentElement;
-  const kill = () => { root.classList.remove('freezing'); if (fr) fr.remove(); if (lg) lg.remove(); };
+  const fr = $('#frost'), lg = $('#frostlogo'), sh = $('#shards'), fl = $('#crackflash'), mt = $('#icemelt');
+  const root = document.documentElement;
+  const kill = () => {
+    root.classList.remove('freezing');
+    [fr, lg, sh, fl, mt].forEach(el => el && el.remove());
+  };
   if (!fr) return;
   let seen = false;
   try { seen = sessionStorage.getItem('be-frost') === '1'; } catch (e) {}
@@ -337,45 +423,74 @@ function frostIntro() {
   try { sessionStorage.setItem('be-frost', '1'); } catch (e) {}
 
   root.classList.add('freezing');
-  drawFrostPattern($('#frostice'));
+  const ice = $('#frostice');
+  drawFrostPattern(ice);
   const set = (k, v) => root.style.setProperty(k, v);
-  let progress = 0;
+  const small = innerWidth < 700;
+  const cx = innerWidth / 2, cy = innerHeight * .46;
+  const rays = small ? 8 : 11, rings = small ? 2 : 3;
 
-  const tick = t0 => requestAnimationFrame(function run(now) {   // индикатор, пока грузится фото
+  let melting = false, progress = 0, raf = 0;
+  const t0 = performance.now();
+  raf = requestAnimationFrame(function wait(now) {          // индикатор, пока грузится фото
     if (melting) return;
     progress = Math.min(70, (now - t0) / 900 * 70);
     set('--f-p', progress.toFixed(1) + '%');
-    requestAnimationFrame(run);
+    raf = requestAnimationFrame(wait);
   });
-  let melting = false;
-  tick(performance.now());
 
   const img = document.querySelector('.hero__bg img');
   const loaded = img && !img.complete
     ? new Promise(res => { img.addEventListener('load', res, { once: true }); img.addEventListener('error', res, { once: true }); })
     : Promise.resolve();
-  const minWait = new Promise(res => setTimeout(res, 700));
+  const minWait = new Promise(res => setTimeout(res, 800));
   const timeout = new Promise(res => setTimeout(res, 2800));
 
   Promise.race([Promise.all([loaded, minWait]), timeout]).then(() => {
     melting = true;
-    const t0 = performance.now(), dur = 2000,
-      ease = t => (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-    requestAnimationFrame(function step(now) {
-      const p = Math.min(1, (now - t0) / dur), e = ease(p);
-      const r1 = e * 190, r0 = Math.max(0, r1 - 16);
-      set('--f-r0', r0.toFixed(1) + '%');
-      set('--f-r1', r1.toFixed(1) + '%');
-      set('--f-blur', (26 * (1 - e)).toFixed(1) + 'px');
-      set('--f-bg', (.62 * (1 - e)).toFixed(3));
-      set('--f-ice', Math.max(0, 1 - e * 1.4).toFixed(3));
-      set('--f-p', (progress + (100 - progress) * Math.min(1, p / .45)).toFixed(1) + '%');
-      const vis = p < .38 ? 1 : Math.max(0, 1 - (p - .38) / .4);
-      set('--f-lg', vis.toFixed(3));
-      set('--f-lgs', (1 + (1 - vis) * .07).toFixed(3));
-      set('--f-lgb', ((1 - vis) * 8).toFixed(1) + 'px');
-      if (p < 1) requestAnimationFrame(step); else kill();
-    });
+    cancelAnimationFrame(raf);
+    set('--f-p', '100%');
+
+    /* 1. удар: трещины вспыхивают, лёд вздрагивает */
+    drawImpact($('#crackcv'), cx, cy, rays + 4);
+    fr.classList.add('hit');
+    fl.animate([{ opacity: 0 }, { opacity: 1, offset: .2 }, { opacity: .7, offset: .45 }, { opacity: 0 }],
+      { duration: 450, easing: 'ease-out', fill: 'forwards' });
+    lg.animate([{ opacity: 1, transform: 'scale(1)', filter: 'blur(0px)' },
+                { opacity: 0, transform: 'scale(1.12)', filter: 'blur(9px)' }],
+      { duration: 420, delay: 90, easing: 'ease-in', fill: 'forwards' });
+
+    /* 2. лёд раскалывается и осколки уходят в глубину */
+    setTimeout(() => {
+      const shards = buildShards(ice, cx, cy, rays, rings);
+      shards.forEach(s => sh.appendChild(s.el));
+      fr.classList.add('gone');
+      let last = 0;
+      shards.forEach(s => {
+        const dirX = (s.mx - cx) || 1, dirY = (s.my - cy) || 1;
+        const dx = dirX * (.22 + s.rnd * .55), dy = dirY * (.2 + s.rnd * .5) + 140 + s.rnd * 320;
+        const dz = 140 + s.rnd * 460;
+        const ax = s.rnd - .5, ay = (1 - s.rnd) - .5, az = s.rnd * .8 - .4;
+        const turn = 70 + s.rnd * 210;
+        const delay = s.dist * 200 + s.rnd * 80, dur = 820 + s.rnd * 480;
+        last = Math.max(last, delay + dur);
+        s.el.animate([
+          { transform: 'translate3d(0,0,0) rotate3d(0,0,1,0deg) scale(1)', opacity: 1, filter: 'blur(0px)' },
+          { transform: `translate3d(${dx * .5}px,${dy * .38}px,${dz * .65}px) rotate3d(${ax},${ay},${az},${turn * .45}deg) scale(1.02)`,
+            opacity: .9, filter: 'blur(1px)', offset: .5 },
+          { transform: `translate3d(${dx}px,${dy}px,${dz}px) rotate3d(${ax},${ay},${az},${turn}deg) scale(.88)`,
+            opacity: 0, filter: 'blur(9px)' }
+        ], { duration: dur, delay, easing: 'cubic-bezier(.22,.61,.36,1)', fill: 'forwards' });
+      });
+
+      /* 3. талая вода испаряется — и сайт открыт */
+      setTimeout(() => {
+        root.classList.remove('freezing');               // сайт оживает, пока тают последние осколки
+        mt.animate([{ opacity: 0 }, { opacity: .45, offset: .25 }, { opacity: 0 }],
+          { duration: 700, easing: 'ease-out', fill: 'forwards' });
+        setTimeout(kill, 700);
+      }, Math.max(300, last - 650));
+    }, 190);
   });
 }
 
