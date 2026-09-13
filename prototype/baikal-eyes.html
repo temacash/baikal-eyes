@@ -141,9 +141,11 @@ p{margin:0}
 .hero{position:relative;min-height:min(92vh,900px);display:flex;align-items:flex-end;
   padding-block:120px clamp(34px,6vw,70px);overflow:hidden}
 .hero__bg{position:absolute;inset:-6% 0 -10%;z-index:0;will-change:transform}
-.hero__bg canvas{width:100%;height:100%;object-fit:cover}
+.hero__bg canvas,.hero__bg img{width:100%;height:100%;object-fit:cover;object-position:center 58%}
+.hero__bg picture{display:block;width:100%;height:100%}
+@media(max-width:700px){.hero__bg img{object-position:center 42%}}
 .hero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
-  background:linear-gradient(180deg,rgba(11,17,23,.66) 0%,rgba(11,17,23,.08) 32%,rgba(11,17,23,.42) 64%,rgba(11,17,23,.94) 92%,var(--ink) 100%)}
+  background:linear-gradient(180deg,rgba(11,17,23,.82) 0%,rgba(11,17,23,.34) 26%,rgba(11,17,23,.30) 46%,rgba(11,17,23,.72) 74%,rgba(11,17,23,.96) 92%,var(--ink) 100%)}
 .hero__in{position:relative;z-index:2;width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:var(--gut)}
 .hero__eyebrow{font-size:var(--fs-label);letter-spacing:.34em;text-transform:uppercase;color:var(--ice);
   display:flex;gap:12px;align-items:center;margin-bottom:26px}
@@ -656,7 +658,7 @@ c5 -18 172 -546 371 -1173 198 -627 374 -1179 390 -1227 29 -88 29 -88 -159
       </div>
     </div>
     <div class="fbot">
-      <span>© <span id="yr">2026</span> Baikal Eyes. Все права защищены.</span>
+      <span>© <span id="yr">2024</span> Baikal Eyes. Все права защищены.</span>
     </div>
   </div>
 </footer>
@@ -1651,7 +1653,12 @@ function cardTpl(t, i) {
 function homeTpl() {
   return `
   <section class="hero">
-    <div class="hero__bg" data-parallax="0.22"><canvas data-scene="dawn" data-seed="11" data-hero aria-label="Рассвет над Байкалом"></canvas></div>
+    <div class="hero__bg" data-parallax="0.22">
+      <picture>
+        <source media="(max-width:700px)" srcset="images/hero-portrait.jpg">
+        <img src="images/hero.jpg" alt="Мыс и бирюзовая вода Байкала летом" fetchpriority="high" decoding="async">
+      </picture>
+    </div>
     <div class="hero__in">
       <p class="hero__eyebrow fade-up" style="animation-delay:.15s"><s></s> Экскурсии и путешествия по Байкалу</p>
       <h1 class="hero__t">
@@ -2389,7 +2396,7 @@ $('#mfoot').innerHTML =
    <a href="${tgLink('')}" target="_blank" rel="noopener">Telegram</a>
    <a href="${chLink()}" target="_blank" rel="noopener">Канал</a>
    <a href="${igLink()}" target="_blank" rel="noopener">Instagram</a>`;
-$('#yr').textContent = new Date().getFullYear();
+(() => { const y = new Date().getFullYear(); $('#yr').textContent = y > 2024 ? '2024—' + y : '2024'; })();
 
 let ticking = false;
 window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(() => { parallax(); ticking = false; }); } }, { passive: true });

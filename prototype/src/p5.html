@@ -446,7 +446,12 @@ function cardTpl(t, i) {
 function homeTpl() {
   return `
   <section class="hero">
-    <div class="hero__bg" data-parallax="0.22"><canvas data-scene="dawn" data-seed="11" data-hero aria-label="Рассвет над Байкалом"></canvas></div>
+    <div class="hero__bg" data-parallax="0.22">
+      <picture>
+        <source media="(max-width:700px)" srcset="images/hero-portrait.jpg">
+        <img src="images/hero.jpg" alt="Мыс и бирюзовая вода Байкала летом" fetchpriority="high" decoding="async">
+      </picture>
+    </div>
     <div class="hero__in">
       <p class="hero__eyebrow fade-up" style="animation-delay:.15s"><s></s> Экскурсии и путешествия по Байкалу</p>
       <h1 class="hero__t">

@@ -2,7 +2,11 @@ import Link from 'next/link';
 import { CONTACTS, tgLink, chLink, igLink } from '@/lib/contacts';
 import { Brand } from './Nav';
 
+const FOUNDED = 2024;
+
 export default function Footer() {
+  const now = new Date().getFullYear();
+  const year = now > FOUNDED ? `${FOUNDED}—${now}` : String(FOUNDED);
   return (
     <footer className="footer">
       <div className="wrap">
@@ -40,7 +44,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="fbot">
-          <span>© {new Date().getFullYear()} Baikal Eyes. Все права защищены.</span>
+          <span>© {year} Baikal Eyes. Все права защищены.</span>
         </div>
       </div>
     </footer>

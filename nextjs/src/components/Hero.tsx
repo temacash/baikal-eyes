@@ -2,7 +2,6 @@
 import Link from 'next/link';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import Scene from './Scene';
 
 const line = (delay: number) => ({
   initial: { y: '105%' },
@@ -17,7 +16,11 @@ export default function Hero() {
   return (
     <section className="hero">
       <motion.div className="hero__bg" style={{ y }}>
-        <Scene scene="dawn" seed={11} eager label="Рассвет над Байкалом" />
+        {/* Фотография первого экрана. Заменить — положить новый файл в public/images/ */}
+        <picture>
+          <source media="(max-width:700px)" srcSet="/images/hero-portrait.jpg" />
+          <img src="/images/hero.jpg" alt="Мыс и бирюзовая вода Байкала летом" fetchPriority="high" decoding="async" />
+        </picture>
       </motion.div>
       <div className="hero__in">
         <motion.p className="hero__eyebrow" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}

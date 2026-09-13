@@ -233,7 +233,7 @@ $('#mfoot').innerHTML =
    <a href="${tgLink('')}" target="_blank" rel="noopener">Telegram</a>
    <a href="${chLink()}" target="_blank" rel="noopener">Канал</a>
    <a href="${igLink()}" target="_blank" rel="noopener">Instagram</a>`;
-$('#yr').textContent = new Date().getFullYear();
+(() => { const y = new Date().getFullYear(); $('#yr').textContent = y > 2024 ? '2024—' + y : '2024'; })();
 
 let ticking = false;
 window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(() => { parallax(); ticking = false; }); } }, { passive: true });
