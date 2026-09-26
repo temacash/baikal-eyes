@@ -60,6 +60,13 @@ export default function RoutePage({ slug }: { slug: string }) {
               <ul className="checks no">{t.exc.map((s) => <li key={s}><Minus size={16} /><span className="muted">{s}</span></li>)}</ul>
             </Reveal>
 
+            {!!t.take?.length && (
+              <Reveal className="tblock">
+                <h2>Что взять с собой</h2>
+                <ul className="checks">{t.take.map((s) => <li key={s}><Check size={16} /><span>{s}</span></li>)}</ul>
+              </Reveal>
+            )}
+
             {(t.route?.length ?? 0) > 1 && <Reveal className="tblock"><h2>Маршрут</h2><RouteMap tour={t} /></Reveal>}
 
             {!!t.photos?.gallery?.length && (
