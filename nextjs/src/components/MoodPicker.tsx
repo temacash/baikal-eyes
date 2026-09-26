@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useState } from 'react';
-import { MOODS, bySlug, kindOf } from '@/lib/data';
+import { MOODS, kindOf, moodPicks } from '@/lib/data';
 import Scene from './Scene';
 
 export default function MoodPicker() {
@@ -26,10 +26,9 @@ export default function MoodPicker() {
         <div className="mood__cap">
           <p>{mood.d}</p>
           <div className="picks">
-            {mood.pick.map((s) => {
-              const t = bySlug(s)!;
+            {moodPicks(mood).map((t) => {
               const seg = kindOf(t) === 'excursion' ? 'excursions' : 'tours';
-              return <Link className="pick" key={s} href={`/${seg}/${t.slug}`}>{t.title} →</Link>;
+              return <Link className="pick" key={t.slug} href={`/${seg}/${t.slug}`}>{t.title} →</Link>;
             })}
           </div>
         </div>

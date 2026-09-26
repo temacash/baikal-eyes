@@ -277,8 +277,8 @@ h1.hero__t,.hero__sub{text-shadow:0 2px 30px rgba(5,10,15,.55)}
   transition:border-color .6s var(--ease),transform .6s var(--ease),background .6s}
 .card:hover{border-color:var(--line-strong);background:#101A24;transform:translateY(-4px)}
 .card__media{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--ink-3)}
-.card__media canvas{width:100%;height:100%;object-fit:cover;transition:transform 1.3s var(--ease),filter .8s}
-.card:hover .card__media canvas{transform:scale(1.07)}
+.card__media canvas,.card__media img{width:100%;height:100%;object-fit:cover;transition:transform 1.3s var(--ease),filter .8s}
+.card:hover .card__media canvas,.card:hover .card__media img{transform:scale(1.07)}
 .card__media::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,17,23,.85),transparent 62%)}
 .card__tag{position:absolute;z-index:2;top:14px;left:14px;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;
   padding:7px 11px;background:rgba(11,17,23,.66);backdrop-filter:blur(8px);border:1px solid var(--line);color:#CFE6EF}

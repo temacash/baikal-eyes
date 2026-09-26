@@ -1,7 +1,8 @@
 import type { Tour } from '@/lib/data';
 
 export default function RouteMap({ tour }: { tour: Tour }) {
-  const pts = tour.route.filter((p) => p[1] !== null) as [string, number][];
+  const route = tour.route ?? [];
+  const pts = route.filter((p) => p[1] !== null) as [string, number][];
   const W = 1000, H = 210, pad = 60;
   const max = pts.length ? pts[pts.length - 1][1] || 1 : 1;
   const nodes = pts.map((p, i) => ({
@@ -35,7 +36,7 @@ export default function RouteMap({ tour }: { tour: Tour }) {
         </svg>
       )}
       <div className="mlegend">
-        {tour.route.map((p) => <span key={p[0]}><b>{p[1] === null ? '—' : `${p[1]} км`}</b>{p[0]}</span>)}
+        {route.map((p) => <span key={p[0]}><b>{p[1] === null ? '—' : `${p[1]} км`}</b>{p[0]}</span>)}
       </div>
     </div>
   );

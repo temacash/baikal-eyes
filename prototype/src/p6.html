@@ -138,13 +138,13 @@ function hydrate(rt) {
     c.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
   });
 
-  if (rt.r === 'home') {
+  if (rt.r === 'home' && $('#moodlist', app)) {
     const setMood = k => {
       const m = MOODS.find(x => x.k === k);
       $$('.mood__it', app).forEach(b => { const on = b.dataset.mood === k; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
       $$('[data-mood-c]', app).forEach(c => c.classList.toggle('on', c.dataset.moodC === k));
       $('#moodtext').textContent = m.d;
-      $('#moodpicks').innerHTML = m.pick.map(s => { const t = bySlug(s); return `<a class="pick" href="#/tour/${t.slug}" data-link>${t.title} →</a>`; }).join('');
+      $('#moodpicks').innerHTML = moodPicks(m).map(t => `<a class="pick" href="#/tour/${t.slug}" data-link>${t.title} →</a>`).join('');
     };
     $$('.mood__it', app).forEach(b => {
       b.addEventListener('click', () => setMood(b.dataset.mood));
@@ -183,10 +183,15 @@ function hydrate(rt) {
     // лайтбокс галереи
     $$('.gallery figure', app).forEach(f => {
       const show = () => {
-        const lb = $('#lb'), c = $('#lbc');
-        const w = Math.min(1280, Math.round(innerWidth * .9)), h = Math.round(w * .62);
-        c.style.width = w + 'px'; c.style.height = h + 'px';
-        paintScene(c, f.dataset.lb, +f.dataset.seed);
+        const lb = $('#lb'), body = $('#lbbody');
+        body.innerHTML = f.dataset.photo
+          ? '<img src="' + f.dataset.photo + '" alt="">'
+          : '<canvas id="lbc"></canvas>';
+        if (!f.dataset.photo) {
+          const c = $('#lbc'), w = Math.min(1280, Math.round(innerWidth * .9));
+          c.style.width = w + 'px'; c.style.height = Math.round(w * .62) + 'px';
+          paintScene(c, f.dataset.lb, +f.dataset.seed);
+        }
         lb.classList.add('on'); lb.setAttribute('aria-hidden', 'false'); $('#lbx').focus();
       };
       f.addEventListener('click', show);

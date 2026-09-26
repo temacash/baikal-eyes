@@ -2,13 +2,13 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowRight, Check, Minus, Phone, Send } from 'lucide-react';
 // Общая страница маршрута: используется и для экскурсий, и для туров.
-import Scene from '@/components/Scene';
+import TourMedia from '@/components/TourMedia';
 import Reveal from '@/components/Reveal';
 import Gallery from '@/components/Gallery';
 import RouteMap from '@/components/RouteMap';
 import Faq from '@/components/Faq';
 import BookingForm from '@/components/BookingForm';
-import { bySlug, kindOf } from '@/lib/data';
+import { ADDONS, bySlug, kindOf } from '@/lib/data';
 import { CONTACTS, money, tgLink } from '@/lib/contacts';
 
 export default function RoutePage({ slug }: { slug: string }) {
@@ -21,7 +21,7 @@ export default function RoutePage({ slug }: { slug: string }) {
   return (
     <>
       <section className="thero">
-        <div className="thero__bg"><Scene scene={t.scene} seed={t.seed} eager label={t.title} /></div>
+        <div className="thero__bg"><TourMedia t={t} kind="hero" eager /></div>
         <div className="thero__in">
           <Link className="crumb" href={isExc ? '/excursions' : '/tours'}>← {isExc ? 'Все экскурсии' : 'Все туры'}</Link>
           <p className="label" style={{ marginTop: 22 }}>{t.kicker}</p>
@@ -60,29 +60,31 @@ export default function RoutePage({ slug }: { slug: string }) {
               <ul className="checks no">{t.exc.map((s) => <li key={s}><Minus size={16} /><span className="muted">{s}</span></li>)}</ul>
             </Reveal>
 
-            <Reveal className="tblock"><h2>Маршрут</h2><RouteMap tour={t} /></Reveal>
+            {(t.route?.length ?? 0) > 1 && <Reveal className="tblock"><h2>Маршрут</h2><RouteMap tour={t} /></Reveal>}
 
-            <Reveal className="tblock">
-              <h2>Галерея</h2>
-              <Gallery scenes={t.gallery} title={t.title} />
-              <p className="formnote" style={{ marginTop: 12 }}>
-                Визуалы — процедурные сцены-заглушки. Замените их на реальные фотографии маршрута в компоненте Scene.
-              </p>
-            </Reveal>
+            {!!t.photos?.gallery?.length && (
+              <Reveal className="tblock">
+                <h2>Фотографии</h2>
+                <Gallery photos={t.photos.gallery} title={t.title} />
+              </Reveal>
+            )}
 
-            <Reveal className="tblock"><h2>Частые вопросы</h2><Faq items={t.faq} /></Reveal>
+            {!!t.faq.length && <Reveal className="tblock"><h2>Частые вопросы</h2><Faq items={t.faq} /></Reveal>}
 
-            <Reveal className="tblock">
-              <h2>Отзывы</h2>
-              <div className="quotes">
-                {t.rev.map((r) => (
-                  <figure className="quote" key={r.n + r.t.slice(0, 10)}>
-                    <p>«{r.t}»</p>
-                    <figcaption className="who"><span className="av">{r.n[0]}</span><span><b>{r.n}</b><span>{r.c}</span></span></figcaption>
-                  </figure>
-                ))}
-              </div>
-            </Reveal>
+            {!!t.rev.length && (
+              <Reveal className="tblock">
+                <h2>Отзывы</h2>
+                <div className="quotes">
+                  {t.rev.map((r) => (
+                    <figure className="quote" key={r.n + r.t.slice(0, 10)}>
+                      <p>«{r.t}»</p>
+                      <figcaption className="who"><span className="av">{r.n[0]}</span><span><b>{r.n}</b><span>{r.c}</span></span></figcaption>
+                    </figure>
+                  ))}
+                </div>
+              </Reveal>
+            )}
+            {t.note && <p className="tnote">{t.note}</p>}
           </div>
 
           <aside>
@@ -109,6 +111,28 @@ export default function RoutePage({ slug }: { slug: string }) {
               </div>
             </div>
           </aside>
+        </div>
+      </section>
+
+      <section className="section section--tight wrap">
+        <div className="shead">
+          <div>
+            <p className="label">Можно добавить к маршруту</p>
+            <Reveal><h2>Дополнительные направления</h2></Reveal>
+          </div>
+          <p className="lead" style={{ maxWidth: '44ch' }}>{ADDONS.lead}</p>
+        </div>
+        <div className="packgrid packgrid--4">
+          {ADDONS.items.map((a) => (
+            <div className="packcol" key={a.h}>
+              <h3>{a.h}</h3>
+              <p className="muted" style={{ fontSize: '.92rem', fontWeight: 300 }}>{a.p}</p>
+              <ul className="checks one">
+                {a.list.map((x) => <li key={x}><Check size={16} /><span>{x}</span></li>)}
+              </ul>
+              {a.note && <p className="formnote">{a.note}</p>}
+            </div>
+          ))}
         </div>
       </section>
     </>

@@ -2,7 +2,7 @@
 .thero{position:relative;min-height:min(78vh,760px);display:flex;align-items:flex-end;
   padding-block:140px clamp(30px,5vw,60px);overflow:hidden}
 .thero__bg{position:absolute;inset:-5% 0 -8%;z-index:0;will-change:transform}
-.thero__bg canvas{width:100%;height:100%;object-fit:cover}
+.thero__bg canvas,.thero__bg img{width:100%;height:100%;object-fit:cover;object-position:center 55%}
 .thero::after{content:"";position:absolute;inset:0;z-index:1;
   background:linear-gradient(180deg,rgba(11,17,23,.72),rgba(11,17,23,.15) 40%,rgba(11,17,23,.72) 78%,var(--ink))}
 .thero__in{position:relative;z-index:2;width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:var(--gut)}
@@ -42,13 +42,13 @@
 @media(min-width:820px){.gallery{grid-template-columns:repeat(4,1fr)}
 .gallery .g0{grid-column:span 2;grid-row:span 2}}
 .gallery figure{margin:0;position:relative;overflow:hidden;aspect-ratio:1;cursor:zoom-in;background:var(--ink-2)}
-.gallery canvas{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease),opacity .5s}
-.gallery figure:hover canvas{transform:scale(1.08)}
+.gallery canvas,.gallery img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease),opacity .5s}
+.gallery figure:hover canvas,.gallery figure:hover img{transform:scale(1.08)}
 .lightbox{position:fixed;inset:0;z-index:70;background:rgba(6,10,14,.94);backdrop-filter:blur(14px);
   display:flex;align-items:center;justify-content:center;padding:clamp(16px,4vw,60px);
   opacity:0;visibility:hidden;transition:.4s var(--ease)}
 .lightbox.on{opacity:1;visibility:visible}
-.lightbox canvas{max-height:82vh;width:auto;border:1px solid var(--line)}
+.lightbox canvas,.lightbox img{max-height:82vh;max-width:92vw;width:auto;border:1px solid var(--line)}
 .lightbox .x{position:absolute;top:22px;right:22px;width:46px;height:46px;border-radius:50%;
   border:1px solid var(--line-strong);background:none;cursor:pointer;display:grid;place-items:center}
 .mapbox{position:relative;border:1px solid var(--line);background:
@@ -173,6 +173,9 @@
 .packcol h3{font-size:1.08rem;font-weight:600;letter-spacing:-.02em;color:var(--paper)}
 .checks.one{grid-template-columns:1fr}
 .seasontab{white-space:normal;text-align:left}
+
+.tnote{font-size:.86rem;color:var(--muted-2);line-height:1.6;max-width:70ch;
+  border-left:1px solid var(--line-strong);padding-left:16px;margin-top:clamp(30px,4vw,48px)}
 
 /* ============ MISC ============ */
 .tofield{position:relative}

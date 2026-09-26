@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import Scene from './Scene';
+import TourMedia from './TourMedia';
 import { money } from '@/lib/contacts';
 import { kindOf, type Tour } from '@/lib/data';
 
@@ -8,7 +8,7 @@ export default function TourCard({ t }: { t: Tour }) {
   return (
     <Link className="card" href={`/${kindOf(t) === 'excursion' ? 'excursions' : 'tours'}/${t.slug}`} aria-label={t.title}>
       <div className="card__media">
-        <Scene scene={t.scene} seed={t.seed} label={t.title} />
+        <TourMedia t={t} kind="cover" />
         <span className="card__tag">{t.kicker}</span>
         <div className="card__price">
           <b>{t.price ? `${money(t.price)} ₽` : 'по запросу'}</b>
