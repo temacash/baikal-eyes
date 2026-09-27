@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import Scene from '@/components/Scene';
 import Reveal from '@/components/Reveal';
 
 export const metadata: Metadata = {
@@ -18,7 +17,7 @@ export default function AboutPage() {
           Мы показываем Байкал не как <span>туристическую открытку</span>, а как живое место, которое хочется почувствовать.
         </h1></Reveal>
         <div className="story">
-          <figure className="storyimg"><Scene scene="people" seed={12} label="Команда Baikal Eyes на берегу" /><figcaption>Мыс Хобой, февраль</figcaption></figure>
+          <figure className="storyimg">{/* eslint-disable-next-line @next/next/no-img-element */}<img src="/images/tours/tazherany-1-den/group-view.jpg" alt="Гости Baikal Eyes в Тажеранских степях" loading="lazy" decoding="async" /><figcaption>Тажеранские степи</figcaption></figure>
           <div>
             <p className="label" style={{ marginBottom: 18 }}>История</p>
             <Reveal><p className="lead">Baikal Eyes начинался с привычки возить друзей туда, куда не ходят автобусы: на лёд Малого моря, на Ольхон, в места, где Байкал открывается без толпы. Со временем из этого выросли маршруты, которые мы возим круглый год.</p></Reveal>
@@ -30,7 +29,7 @@ export default function AboutPage() {
 
       <section className="section wrap">
         <div className="story rev">
-          <figure className="storyimg"><Scene scene="steppe" seed={8} label="Джип в Тажеранских степях" /><figcaption>Тажеранские степи, сентябрь</figcaption></figure>
+          <figure className="storyimg">{/* eslint-disable-next-line @next/next/no-img-element */}<img src="/images/tours/olkhon-2/shamanka.jpg" alt="Мыс Бурхан и скала Шаманка с высоты" loading="lazy" decoding="async" /><figcaption>Ольхон, мыс Бурхан</figcaption></figure>
           <div>
             <p className="label" style={{ marginBottom: 18 }}>Почему выбирают нас</p>
             <Reveal><h2 style={{ fontSize: 'var(--fs-h2)', marginBottom: 22 }}>Опыт, который нельзя купить в брошюре</h2></Reveal>
@@ -50,7 +49,7 @@ export default function AboutPage() {
 
       <section className="section wrap">
         <div className="story">
-          <figure className="storyimg"><Scene scene="night" seed={64} label="Ночное небо над Байкалом" /><figcaption>Малое море, ночь на льду</figcaption></figure>
+          <figure className="storyimg">{/* eslint-disable-next-line @next/next/no-img-element */}<img src="/images/tours/olkhon-3/sunset-ice.jpg" alt="Закат на льду Байкала" loading="lazy" decoding="async" /><figcaption>Закат на льду</figcaption></figure>
           <div>
             <p className="label" style={{ marginBottom: 18 }}>Команда</p>
             <Reveal><h2 style={{ fontSize: 'var(--fs-h2)', marginBottom: 22 }}>С вами поедет кто-то из нас</h2></Reveal>

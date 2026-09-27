@@ -253,11 +253,12 @@ h1.hero__t,.hero__sub{text-shadow:0 2px 30px rgba(5,10,15,.55)}
 .mood__it.on em{color:var(--ice)}
 .mood__it.on .dot{background:var(--ice);box-shadow:0 0 16px 2px rgba(169,229,245,.55)}
 .mood__stage{position:relative;min-height:clamp(300px,44vw,520px);border-radius:3px;overflow:hidden;background:var(--ink-2)}
-.mood__stage canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+.mood__stage canvas,.mood__stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
   opacity:0;transform:scale(1.06);transition:opacity 1s var(--ease),transform 1.6s var(--ease)}
-.mood__stage canvas.on{opacity:1;transform:none}
+.mood__stage canvas.on,.mood__stage img.on{opacity:1;transform:none}
 .mood__cap{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:clamp(20px,3vw,34px);
-  background:linear-gradient(0deg,rgba(7,12,17,.94),rgba(7,12,17,.3) 55%,transparent)}
+  padding-top:clamp(52px,8vw,96px);
+  background:linear-gradient(0deg,rgba(7,12,17,.97) 8%,rgba(7,12,17,.8) 42%,rgba(7,12,17,.35) 70%,transparent)}
 .mood__cap p{max-width:46ch;color:#C7D4DC;font-weight:300;font-size:.98rem;margin-bottom:16px}
 .mood__cap .picks{display:flex;flex-wrap:wrap;gap:8px}
 .pick{font-size:.76rem;padding:8px 14px;border:1px solid var(--line-strong);border-radius:999px;
@@ -428,7 +429,7 @@ h1.hero__t,.hero__sub{text-shadow:0 2px 30px rgba(5,10,15,.55)}
 .story{display:grid;gap:clamp(26px,4vw,60px);grid-template-columns:1fr;align-items:center}
 @media(min-width:900px){.story{grid-template-columns:1fr 1fr}.story.rev .storyimg{order:2}}
 .storyimg{position:relative;aspect-ratio:4/5;overflow:hidden;background:var(--ink-2);border:1px solid var(--line)}
-.storyimg canvas{width:100%;height:100%;object-fit:cover}
+.storyimg canvas,.storyimg img{width:100%;height:100%;object-fit:cover;display:block}
 .storyimg figcaption{position:absolute;left:0;bottom:0;right:0;padding:18px;font-size:.74rem;letter-spacing:.14em;
   text-transform:uppercase;color:#C0D2DB;background:linear-gradient(0deg,rgba(7,12,17,.9),transparent)}
 .values{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);grid-template-columns:1fr}
@@ -1413,7 +1414,7 @@ const TOURS = [
     faq: [], rev: []
   },
   {
-    slug: 'arshan-pik-lyubvi', cat: ['mountains', 'jeep'],
+    slug: 'arshan-pik-lyubvi', cat: ['mountains'],
     title: 'Аршан за один день — Пик Любви', kicker: 'Тур с подъёмом в горы Саян',
     photos: {
       hero: 'images/tours/arshan-pik/hero.jpg',
@@ -1455,7 +1456,7 @@ const TOURS = [
     faq: [], rev: []
   },
   {
-    slug: 'arshan-1-den', cat: ['mountains', 'jeep'],
+    slug: 'arshan-1-den', cat: ['mountains'],
     title: 'Аршан за один день — классический', kicker: 'Тур в Тункинскую долину',
     photos: {
       hero: 'images/tours/arshan-1-den/hero.jpg',
@@ -1644,12 +1645,18 @@ const TOURS = [
 const bySlug = s => TOURS.find(t => t.slug === s);
 
 const MOODS = [
-  { k: 'ice',    n: 'Ледяной Байкал',     scene: 'ice',     d: 'Прозрачный лёд, гроты и сокуи. Февраль и март, когда озеро становится стеклянным.', cat: 'winter' },
-  { k: 'wild',   n: 'Дикая природа',      scene: 'khoboy',  d: 'Скалы, мысы и берега, где нет ни дорог, ни людей. Для тех, кто едет за тишиной.', cat: 'olkhon' },
-  { k: 'olkhon', n: 'Ольхон и энергия',   scene: 'shaman',  d: 'Остров с характером: Шаман-скала, степь, дюны и место силы бурятских шаманов.', cat: 'olkhon' },
-  { k: 'jeep',   n: 'Джип-приключение',   scene: 'steppe',  d: 'Бездорожье Тажеранов, пещеры и бухты, куда доезжают только внедорожники.', cat: 'jeep' },
-  { k: 'calm',   n: 'Спокойный отдых',    scene: 'taiga',   d: 'Ровный темп, короткие переезды, тёплая вода и вечера у берега.', cat: 'city' },
-  { k: 'city',   n: 'Иркутск и культура', scene: 'irkutsk', d: 'Деревянные особняки, история купцов и ссыльных, городская кухня.', cat: 'city' }
+  { k: 'ice',    n: 'Ледяной Байкал',     img: 'images/tours/olkhon-3/grotto-arch.jpg',
+    d: 'Прозрачный лёд, гроты и сокуи. Февраль и март, когда озеро становится стеклянным.', cat: 'winter' },
+  { k: 'wild',   n: 'Дикая природа',      img: 'images/tours/olkhon-2/viewpoint.jpg',
+    d: 'Скалы, мысы и берега, где нет ни дорог, ни людей. Для тех, кто едет за тишиной.', cat: 'olkhon' },
+  { k: 'olkhon', n: 'Ольхон и энергия',   img: 'images/tours/olkhon-1-den/hero.jpg',
+    d: 'Остров с характером: Шаманка, сэргэ, степь и место силы бурятских шаманов.', cat: 'olkhon' },
+  { k: 'jeep',   n: 'Джип-приключение',   img: 'images/tours/olkhon-2/panorama.jpg',
+    d: 'Бездорожье Тажеранов, пещеры и бухты, куда доезжают только внедорожники.', cat: 'jeep' },
+  { k: 'calm',   n: 'Горы и источники',   img: 'images/tours/arshan-1-den/hero.jpg',
+    d: 'Ровный темп без нагрузок: Тункинская долина, дацан, минеральные источники и горячие ванны.', cat: 'mountains' },
+  { k: 'city',   n: 'Рядом с Иркутском',  img: 'images/tours/listvyanka/view.jpg',
+    d: 'Листвянка, Тальцы, Байкальский музей и нерпы — озеро в часе езды от города.', cat: 'city' }
 ];
 const moodPicks = m => {
   const hit = TOURS.filter(t => t.cat.includes(m.cat));
@@ -1761,7 +1768,7 @@ ${TOURS.length >= 4 ? `  <section class="section section--tight wrap" id="pick">
           <em>0${i + 1}</em><strong>${m.n}</strong><span class="dot"></span></button>`).join('')}
       </div>
       <div class="mood__stage rv">
-        ${MOODS.map((m, i) => `<canvas data-scene="${m.scene}" data-seed="${100 + i}" data-mood-c="${m.k}" class="${i === 0 ? 'on' : ''}" aria-label="${m.n}"></canvas>`).join('')}
+        ${MOODS.map((m, i) => `<img src="${m.img}" data-mood-c="${m.k}" class="${i === 0 ? 'on' : ''}" alt="${m.n}" loading="${i === 0 ? 'eager' : 'lazy'}" decoding="async">`).join('')}
         <div class="mood__cap">
           <p id="moodtext">${MOODS[0].d}</p>
           <div class="picks" id="moodpicks"></div>
@@ -1983,7 +1990,7 @@ function aboutTpl() {
     <p class="label">О нас</p>
     <h1 class="bigquote rv" style="margin:26px 0 40px">Мы показываем Байкал не как <span>туристическую открытку</span>, а как живое место, которое хочется почувствовать.</h1>
     <div class="story">
-      <figure class="storyimg rv"><canvas data-scene="people" data-seed="12" aria-label="Команда Baikal Eyes на берегу"></canvas><figcaption>Мыс Хобой, февраль</figcaption></figure>
+      <figure class="storyimg rv"><img src="images/tours/tazherany-1-den/group-view.jpg" alt="Гости Baikal Eyes в Тажеранских степях" loading="lazy" decoding="async"><figcaption>Тажеранские степи</figcaption></figure>
       <div>
         <p class="label" style="margin-bottom:18px">История</p>
         <p class="lead rv">Baikal Eyes начинался с привычки возить друзей туда, куда не ходят автобусы: на лёд Малого моря, на Ольхон, в места, где Байкал открывается без толпы. Со временем из этого выросли маршруты, которые мы возим круглый год.</p>
@@ -1995,7 +2002,7 @@ function aboutTpl() {
 
   <section class="section wrap">
     <div class="story rev">
-      <figure class="storyimg rv"><canvas data-scene="steppe" data-seed="8" aria-label="Джип в Тажеранских степях"></canvas><figcaption>Тажеранские степи, сентябрь</figcaption></figure>
+      <figure class="storyimg rv"><img src="images/tours/olkhon-2/shamanka.jpg" alt="Мыс Бурхан и скала Шаманка с высоты" loading="lazy" decoding="async"><figcaption>Ольхон, мыс Бурхан</figcaption></figure>
       <div>
         <p class="label" style="margin-bottom:18px">Почему выбирают нас</p>
         <h2 class="rv" style="font-size:var(--fs-h2);margin-bottom:22px">Опыт, который нельзя купить в брошюре</h2>
@@ -2015,7 +2022,7 @@ function aboutTpl() {
 
   <section class="section wrap">
     <div class="story">
-      <figure class="storyimg rv"><canvas data-scene="night" data-seed="64" aria-label="Ночное небо над Байкалом"></canvas><figcaption>Малое море, ночь на льду</figcaption></figure>
+      <figure class="storyimg rv"><img src="images/tours/olkhon-3/sunset-ice.jpg" alt="Закат на льду Байкала" loading="lazy" decoding="async"><figcaption>Закат на льду</figcaption></figure>
       <div>
         <p class="label" style="margin-bottom:18px">Команда</p>
         <h2 class="rv" style="font-size:var(--fs-h2);margin-bottom:22px">С вами поедет кто-то из нас</h2>
@@ -2103,7 +2110,7 @@ function packingTpl() {
 
   <section class="section section--tight wrap">
     <div class="story">
-      <figure class="storyimg rv"><canvas data-scene="ice" data-seed="23" aria-label="Лёд Байкала"></canvas><figcaption>Малое море, февраль</figcaption></figure>
+      <figure class="storyimg rv"><img src="images/tours/olkhon-1-den/ice-rest.jpg" alt="Прозрачный лёд Байкала" loading="lazy" decoding="async"><figcaption>Прозрачный лёд Байкала</figcaption></figure>
       <div>
         <p class="label" style="margin-bottom:18px">Это брать не нужно</p>
         <h2 class="rv" style="font-size:var(--fs-h2);margin-bottom:22px">Мы возим сами</h2>

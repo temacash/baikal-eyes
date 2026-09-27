@@ -15,7 +15,7 @@ export type Tour = {
   program: Program[]; route?: [string, number | null][];
   note?: string; faq: Faq[]; rev: Review[];
 };
-export type Mood = { k: string; n: string; scene: string; d: string; cat: string };
+export type Mood = { k: string; n: string; img: string; d: string; cat: string };
 export type Addon = { h: string; p: string; list: string[]; note?: string };
 
 export const CATS: Cat[] = [
@@ -174,7 +174,7 @@ export const TOURS: Tour[] = [
     faq: [], rev: []
   },
   {
-    slug: 'arshan-pik-lyubvi', cat: ['mountains', 'jeep'],
+    slug: 'arshan-pik-lyubvi', cat: ['mountains'],
     title: 'Аршан за один день — Пик Любви', kicker: 'Тур с подъёмом в горы Саян',
     photos: {
       hero: '/images/tours/arshan-pik/hero.jpg',
@@ -216,7 +216,7 @@ export const TOURS: Tour[] = [
     faq: [], rev: []
   },
   {
-    slug: 'arshan-1-den', cat: ['mountains', 'jeep'],
+    slug: 'arshan-1-den', cat: ['mountains'],
     title: 'Аршан за один день — классический', kicker: 'Тур в Тункинскую долину',
     photos: {
       hero: '/images/tours/arshan-1-den/hero.jpg',
@@ -405,12 +405,18 @@ export const TOURS: Tour[] = [
 export const bySlug = (s: string) => TOURS.find((t) => t.slug === s);
 
 export const MOODS: Mood[] = [
-  { k: 'ice',    n: 'Ледяной Байкал',     scene: 'ice',     d: 'Прозрачный лёд, гроты и сокуи. Февраль и март, когда озеро становится стеклянным.', cat: 'winter' },
-  { k: 'wild',   n: 'Дикая природа',      scene: 'khoboy',  d: 'Скалы, мысы и берега, где нет ни дорог, ни людей. Для тех, кто едет за тишиной.', cat: 'olkhon' },
-  { k: 'olkhon', n: 'Ольхон и энергия',   scene: 'shaman',  d: 'Остров с характером: Шаман-скала, степь, дюны и место силы бурятских шаманов.', cat: 'olkhon' },
-  { k: 'jeep',   n: 'Джип-приключение',   scene: 'steppe',  d: 'Бездорожье Тажеранов, пещеры и бухты, куда доезжают только внедорожники.', cat: 'jeep' },
-  { k: 'calm',   n: 'Спокойный отдых',    scene: 'taiga',   d: 'Ровный темп, короткие переезды, тёплая вода и вечера у берега.', cat: 'city' },
-  { k: 'city',   n: 'Иркутск и культура', scene: 'irkutsk', d: 'Деревянные особняки, история купцов и ссыльных, городская кухня.', cat: 'city' }
+  { k: 'ice',    n: 'Ледяной Байкал',     img: '/images/tours/olkhon-3/grotto-arch.jpg',
+    d: 'Прозрачный лёд, гроты и сокуи. Февраль и март, когда озеро становится стеклянным.', cat: 'winter' },
+  { k: 'wild',   n: 'Дикая природа',      img: '/images/tours/olkhon-2/viewpoint.jpg',
+    d: 'Скалы, мысы и берега, где нет ни дорог, ни людей. Для тех, кто едет за тишиной.', cat: 'olkhon' },
+  { k: 'olkhon', n: 'Ольхон и энергия',   img: '/images/tours/olkhon-1-den/hero.jpg',
+    d: 'Остров с характером: Шаманка, сэргэ, степь и место силы бурятских шаманов.', cat: 'olkhon' },
+  { k: 'jeep',   n: 'Джип-приключение',   img: '/images/tours/olkhon-2/panorama.jpg',
+    d: 'Бездорожье Тажеранов, пещеры и бухты, куда доезжают только внедорожники.', cat: 'jeep' },
+  { k: 'calm',   n: 'Горы и источники',   img: '/images/tours/arshan-1-den/hero.jpg',
+    d: 'Ровный темп без нагрузок: Тункинская долина, дацан, минеральные источники и горячие ванны.', cat: 'mountains' },
+  { k: 'city',   n: 'Рядом с Иркутском',  img: '/images/tours/listvyanka/view.jpg',
+    d: 'Листвянка, Тальцы, Байкальский музей и нерпы — озеро в часе езды от города.', cat: 'city' }
 ];
 export const moodPicks = (m: Mood): Tour[] => {
   const hit = TOURS.filter((t) => t.cat.includes(m.cat));

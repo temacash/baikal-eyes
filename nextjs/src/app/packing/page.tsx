@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, Check } from 'lucide-react';
-import Scene from '@/components/Scene';
 import Reveal from '@/components/Reveal';
 import SeasonPacking from '@/components/SeasonPacking';
 import { PACKING } from '@/lib/packing';
@@ -45,7 +44,7 @@ export default function PackingPage() {
 
       <section className="section section--tight wrap">
         <div className="story">
-          <figure className="storyimg"><Scene scene="ice" seed={23} label="Лёд Байкала" /><figcaption>Малое море, февраль</figcaption></figure>
+          <figure className="storyimg">{/* eslint-disable-next-line @next/next/no-img-element */}<img src="/images/tours/olkhon-1-den/ice-rest.jpg" alt="Прозрачный лёд Байкала" loading="lazy" decoding="async" /><figcaption>Прозрачный лёд Байкала</figcaption></figure>
           <div>
             <p className="label" style={{ marginBottom: 18 }}>Это брать не нужно</p>
             <Reveal><h2 style={{ fontSize: 'var(--fs-h2)', marginBottom: 22 }}>Мы возим сами</h2></Reveal>

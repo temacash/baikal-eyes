@@ -2,7 +2,6 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { MOODS, kindOf, moodPicks } from '@/lib/data';
-import Scene from './Scene';
 
 export default function MoodPicker() {
   const [active, setActive] = useState(MOODS[0].k);
@@ -21,7 +20,9 @@ export default function MoodPicker() {
       </div>
       <div className="mood__stage">
         {MOODS.map((m, i) => (
-          <Scene key={m.k} scene={m.scene} seed={100 + i} label={m.n} className={m.k === active ? 'on' : ''} />
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img key={m.k} src={m.img} alt={m.n} loading={i === 0 ? 'eager' : 'lazy'} decoding="async"
+            className={m.k === active ? 'on' : ''} />
         ))}
         <div className="mood__cap">
           <p>{mood.d}</p>
