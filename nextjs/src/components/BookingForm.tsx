@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { ArrowRight, Phone, Send, Radio } from 'lucide-react';
 import { CONTACTS, tgLink, chLink } from '@/lib/contacts';
 import { TOURS } from '@/lib/data';
+import { track } from '@/components/Analytics';
 
 type Props = { tourTitle?: string; withSelect?: boolean; idPrefix?: string };
 
@@ -13,9 +14,10 @@ export default function BookingForm({ tourTitle, withSelect = false, idPrefix = 
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     const d = Object.fromEntries(fd.entries()) as Record<string, string>;
+    const tour = tourTitle || d.tour || '';
     const text = [
       'Заявка с сайта Baikal Eyes',
-      tourTitle ? `Маршрут: ${tourTitle}` : d.tour ? `Маршрут: ${d.tour}` : '',
+      tour ? `Маршрут: ${tour}` : '',
       `Имя: ${d.name || '—'}`,
       `Контакт: ${d.contact || '—'}`,
       `Человек: ${d.people || '—'}`,
@@ -23,8 +25,17 @@ export default function BookingForm({ tourTitle, withSelect = false, idPrefix = 
       d.note ? `Комментарий: ${d.note}` : ''
     ].filter(Boolean).join('\n');
 
-    // TODO: здесь можно отправить заявку на бэкенд / в Telegram-бота:
-    // await fetch('/api/lead', { method: 'POST', body: JSON.stringify(d) });
+    // Сохраняем заявку в базу — она появится в панели /admin.
+    let vid: string | null = null;
+    try { vid = localStorage.getItem('be_vid'); } catch { vid = null; }
+    fetch('/api/lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...d, tour, path: location.pathname, vid }),
+      keepalive: true,
+    }).catch(() => {});
+    track('form', { tour });
+
     setSent(text);
     window.open(tgLink(text), '_blank', 'noopener');
   };
@@ -64,9 +75,9 @@ export default function BookingForm({ tourTitle, withSelect = false, idPrefix = 
         <button className="btn btn--full" type="submit">Отправить заявку <ArrowRight size={15} /></button>
       </div>
       <div className="contactline full">
-        <a className="iconbtn" href={tgLink('Здравствуйте! Хочу подобрать путешествие по Байкалу.')} target="_blank" rel="noopener"><Send size={15} /> Telegram</a>
-        <a className="iconbtn" href={chLink()} target="_blank" rel="noopener"><Radio size={15} /> Канал</a>
-        <a className="iconbtn" href={`tel:+${CONTACTS.phoneRaw}`}><Phone size={15} /></a>
+        <a className="iconbtn" data-track="telegram" href={tgLink('Здравствуйте! Хочу подобрать путешествие по Байкалу.')} target="_blank" rel="noopener"><Send size={15} /> Telegram</a>
+        <a className="iconbtn" data-track="channel" href={chLink()} target="_blank" rel="noopener"><Radio size={15} /> Канал</a>
+        <a className="iconbtn" data-track="phone" href={`tel:+${CONTACTS.phoneRaw}`}><Phone size={15} /></a>
       </div>
       {sent && (
         <div className="sent on full">

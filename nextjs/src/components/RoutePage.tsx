@@ -105,10 +105,10 @@ export default function RoutePage({ slug }: { slug: string }) {
                 <div className="mini"><span>Группа</span><b>{t.group}</b></div>
                 <div className="mini"><span>Формат</span><b>{t.type}</b></div>
                 <hr />
-                <a className="btn btn--full" href="#book">Забронировать путешествие <ArrowRight size={15} /></a>
+                <a className="btn btn--full" href="#book" data-track="book" data-tour={t.title}>Забронировать путешествие <ArrowRight size={15} /></a>
                 <div className="contactline">
-                  <a className="iconbtn" href={tgLink(msg)} target="_blank" rel="noopener"><Send size={15} /> Telegram</a>
-                  <a className="iconbtn" href={`tel:+${CONTACTS.phoneRaw}`}><Phone size={15} /> Позвонить</a>
+                  <a className="iconbtn" data-track="telegram" data-tour={t.title} href={tgLink(msg)} target="_blank" rel="noopener"><Send size={15} /> Telegram</a>
+                  <a className="iconbtn" data-track="phone" data-tour={t.title} href={`tel:+${CONTACTS.phoneRaw}`}><Phone size={15} /> Позвонить</a>
                 </div>
               </div>
               <div className="bookcard" id="book" style={{ marginTop: 16 }}>

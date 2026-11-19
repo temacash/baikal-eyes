@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
-import './globals.css';
+import '../globals.css';
 import Nav from '@/components/Nav';
 import FrostIntro from '@/components/FrostIntro';
 import Footer from '@/components/Footer';
+import Analytics from '@/components/Analytics';
+import { METRIKA_ID, METRIKA_SNIPPET } from '@/lib/metrika';
 
 
 export const metadata: Metadata = {
@@ -22,6 +24,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ru">
       <head>
+        {/* Yandex.Metrika counter — первым в <head>, чтобы просмотр засчитывался даже при быстром уходе */}
+        <script type="text/javascript" dangerouslySetInnerHTML={{ __html: METRIKA_SNIPPET }} />
+        {/* /Yandex.Metrika counter */}
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
           rel="stylesheet"
@@ -29,11 +34,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
+        <noscript>
+          <div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={`https://mc.yandex.ru/watch/${METRIKA_ID}`} style={{ position: 'absolute', left: '-9999px' }} alt="" />
+          </div>
+        </noscript>
         <FrostIntro />
         <div className="grain" aria-hidden="true" />
         <Nav />
         <main>{children}</main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   );

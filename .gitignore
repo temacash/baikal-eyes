@@ -15,3 +15,6 @@ Thumbs.db
 
 # служебное
 _archive/
+
+# файлы, которые сохраняет приложение Claude
+Claude outputs/
